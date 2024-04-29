@@ -8,8 +8,8 @@ from typing import Optional, List, Any
 
 from utils import load_module
 
-FILES_STORAGE = "fuzzy_logic_fs"
-TEMPLATE_FILES_DIR = "templates"
+FILES_STORAGE = "files_storage"
+TEMPLATE_FILES_DIR = "task_templates"
 RESULTS = {"task_1": [],
            "task_2": [],
            "task_3": []}

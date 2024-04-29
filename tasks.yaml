@@ -1,0 +1,18 @@
+storage_user_files: "storage"
+
+tasks:
+  - name: "Task 1"
+    text: "Text 1"
+    template_file_path: ""
+    test_file_path: ""
+
+  - name: "Task 3"
+    text: "Text 3"
+    template_file_path: ""
+    test_file_path: ""
+
+  - name: "Task 3"
+    text: "Text 3"
+    template_file_path: ""
+    test_file_path: ""
+

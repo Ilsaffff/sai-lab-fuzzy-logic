@@ -1,3 +1,4 @@
+import json
 import math
 import os.path
 from collections import Counter
@@ -8,6 +9,7 @@ from typing import Optional, List, Any
 from utils import load_module
 
 FILES_STORAGE = "fuzzy_logic_fs"
+TEMPLATE_FILES_DIR = "templates"
 RESULTS = {"task_1": [],
            "task_2": [],
            "task_3": []}
@@ -58,6 +60,14 @@ class Candidate:
         self.os: Optional[OSEnum] = os
 
 
+def get_text_task_1():
+    return "Отправляем тебе задание 1, вот инструкция:"
+
+
+def get_template_file_task_1():
+    return f"{TEMPLATE_FILES_DIR}/task_1.py"
+
+
 def test_task_1(user_id: int):
     user_file = os.path.join(FILES_STORAGE,
                              f"task_1_{user_id}.py")
@@ -91,10 +101,27 @@ def test_task_1(user_id: int):
     elif points < 5:
         message = f"Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
 
-    return points, message, success, error
+    RESULTS["task_1"].append({
+        "user_id": user_id,
+        "success": success,
+        "points": points,
+        "error": error,
+    })
+    return message
+
+
+def get_text_task_2():
+    return "Отправляем тебе задание 2, вот инструкция:"
+
+
+def get_template_file_task_2():
+    return f"{TEMPLATE_FILES_DIR}/task_2.py"
 
 
 def test_task_2(user_id: int):
+    success = True
+    error = None
+
     def valid_entropy(class_probabilities: List[float]) -> float:
         return sum(-p * math.log(p, 2) for p in class_probabilities if p > 0)
 
@@ -104,12 +131,40 @@ def test_task_2(user_id: int):
     func = getattr(module, "entropy")
 
     random_class_probabilities = [random.randint(0, 10) / 10 for i in range(10)]
-    if valid_entropy(random_class_probabilities) == func(
-            random_class_probabilities):
-        return 1
+    try:
+        if valid_entropy(random_class_probabilities) == func(
+                random_class_probabilities):
+            message = "Твой код отлично сработал, держи баллллы"
+            points = 5
+        else:
+            points = 3
+            message = "Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
+    except Exception as e:
+        message = f"Ууупс, твой код упал с ошибкой: {error}"
+        success = False
+        error = str(e)
+        points = 0
+    RESULTS["task_2"].append({
+        "user_id": user_id,
+        "success": success,
+        "points": points,
+        "error": error,
+    })
+    return message
+
+
+def get_text_task_3():
+    return "Отправляем тебе задание 3, вот инструкция:"
+
+
+def get_template_file_task_3():
+    return f"{TEMPLATE_FILES_DIR}/task_3.py"
 
 
 def test_task_3(user_id: int):
+    success = True
+    error = None
+
     user_file = os.path.join(FILES_STORAGE,
                              f"task_3_{user_id}.py")
     module = load_module(user_file)
@@ -129,6 +184,25 @@ def test_task_3(user_id: int):
         return valid_entropy(valid_class_probabilities(labels))
 
     random_class_probabilities = [random.randint(0, 10) for i in range(10)]
-    if valid_data_entropy(random_class_probabilities) == func(
-            random_class_probabilities):
-        return 1
+    try:
+        if valid_data_entropy(random_class_probabilities) == func(
+                random_class_probabilities):
+            message = "Твой код отлично сработал, держи баллллы"
+            points = 5
+        else:
+            message = "Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
+            points = 3
+    except Exception as e:
+        message = f"Ууупс, твой код упал с ошибкой: {error}"
+        success = False
+        error = str(e)
+        points = 0
+
+    RESULTS["task_3"].append({
+        "user_id": user_id,
+        "success": success,
+        "points": points,
+        "error": error,
+    })
+
+    return message

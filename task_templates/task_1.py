@@ -15,11 +15,12 @@ class LanguageEnum(str, Enum):
     PYTHON = "python"
     JAVA = "java"
     CPP = "cpp"
-    GO = "go"
+    R = "r"
 
 
 class OSEnum(str, Enum):
-    UNIX = "unix"
+    MACOS = "macos"
+    LINUX = "linux"
     WINDOWS = "windows"
 
 
@@ -56,19 +57,10 @@ def select(c: Candidate) -> QuestionEnum:
     """
     Функция реализует стратегию управления
 
-    Параметры:
-        с (Candidate): текущее состояние кандидата. Все поля Candidate представляют собой строки из маленьких букв
-                       не меняйте состояние кандидата!
-
-    Возвращаемое значение:
-        (QuestionEnum) - элемент из енама
-
-    Возвращайте код QuestionEnum согласно желаемому вопросу или принятому решению
-
-    Если хотите спросить про уровень (level), верните QuestionEnum.LVL
-    Если хотите спросить про язык (lang), верните QuestionEnum.LANG
-    Если хотите спросить про высшее образование (degree), верните QuestionEnum.DEGREE
-    Если хотите спросить про ОС (OS), верните QuestionEnum.OS
+    Если хотите спросить про уровень (level), верните QuestionEnum.ASK_LEVEL
+    Если хотите спросить про язык (lang), верните QuestionEnum.ASK_LANGUAGE
+    Если хотите спросить про высшее образование (degree), верните QuestionEnum.ASK_DEGREE
+    Если хотите спросить про ОС (OS), верните QuestionEnum.ASK_OS
 
     Если хотите принять человека на работу, верните QuestionEnum.HIRE
     Если хотите отказать человеку, верните QuestionEnum.DECLINE
@@ -89,7 +81,7 @@ def select(c: Candidate) -> QuestionEnum:
             else:
                 if c.os is None:
                     return QuestionEnum.ASK_OS
-                elif c.os == OSEnum.UNIX:
+                elif c.os == OSEnum.MACOS:
                     return QuestionEnum.HIRE
 
         # elif c.lang == LanguageEnum.CPP: ...

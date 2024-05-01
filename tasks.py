@@ -27,7 +27,7 @@ class LanguageEnum(str, Enum):
     PYTHON = "python"
     JAVA = "java"
     CPP = "cpp"
-    GO = "go"
+    R = "r"
 
 
 class OSEnum(str, Enum):

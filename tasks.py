@@ -63,7 +63,12 @@ class Candidate:
 
 
 def get_text_task_1():
-    return "Отправляем тебе задание 1, вот инструкция:"
+    return ("Необходимо реализовать функцию select по фотографии ниже.\n"
+            "Часть кода уже написана, для большего понимания")
+
+
+def get_photo_file_task_1() -> str:
+    return f"{INPUT_STORAGE}/task_1.png"
 
 
 def get_template_file_task_1():
@@ -95,7 +100,7 @@ def test_task_1(user_id: int):
             points -= 1
     except Exception as e:
         success = False
-        points = 2
+        points = 1
         error = str(e)
     if points == 5:
         message = "Твой код отлично сработал, держи баллллы"
@@ -114,7 +119,7 @@ def test_task_1(user_id: int):
 
 
 def get_text_task_2():
-    return "Отправляем тебе задание 2, вот инструкция:"
+    return "Необходимо реализовать функцию, которая будет вычислять энтропию Шеннона"
 
 
 def get_photo_file_task_2() -> str:
@@ -144,7 +149,7 @@ def test_task_2(user_id: int):
             message = "Твой код отлично сработал, держи баллллы"
             points = 5
         else:
-            points = 3
+            points = 1
             message = "Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
     except Exception as e:
         message = f"Ууупс, твой код упал с ошибкой: {e}"
@@ -161,7 +166,7 @@ def test_task_2(user_id: int):
 
 
 def get_text_task_3():
-    return "Отправляем тебе задание 3, вот инструкция:"
+    return "Необходимо реализовать функцию, которая будет вычислять вероятности класса для энтропии Шеннона"
 
 
 def get_template_file_task_3():
@@ -197,7 +202,7 @@ def test_task_3(user_id: int):
             points = 5
         else:
             message = "Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
-            points = 3
+            points = 1
     except Exception as e:
         message = f"Ууупс, твой код упал с ошибкой: {e}"
         success = False
@@ -217,6 +222,3 @@ def test_task_3(user_id: int):
 def save_results():
     with open("grade.json", "w") as f:
         json.dump(RESULTS, f)
-
-
-

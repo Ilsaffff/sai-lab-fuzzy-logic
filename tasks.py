@@ -1,20 +1,17 @@
 import json
 import math
 import os.path
-from collections import Counter
-from enum import Enum
 import random
-from typing import Optional, List, Any
+from enum import Enum
+from typing import Optional, List
 
 from utils import load_module
 
+TEMPLATE_FILE_PATH = 'task_template.py'
+RESULTS = {"grade": None}
+
 OUT_STORAGE = "out_storage"
 INPUT_STORAGE = "in_storage"
-TEMPLATE_FILES_DIR = "task_templates"
-
-RESULTS = {"task_1": [],
-           "task_2": [],
-           "task_3": []}
 
 
 class LevelEnum(str, Enum):
@@ -71,53 +68,6 @@ def get_photo_file_task_1() -> str:
     return f"{INPUT_STORAGE}/task_1.png"
 
 
-def get_template_file_task_1():
-    return f"{TEMPLATE_FILES_DIR}/task_1.py"
-
-
-def test_task_1(user_id: int):
-    message = None
-    success = True
-    error = None
-    points = 5
-    candidate_no_attributes = Candidate()
-    try:
-        user_file = os.path.join(OUT_STORAGE,
-                                 f"task_1_{user_id}.py")
-        module = load_module(user_file)
-        func = module.select
-
-        if func(candidate_no_attributes) != QuestionEnum.ASK_LEVEL:
-            points -= 1
-
-        candidate_with_level = Candidate(level=LevelEnum.JUNIOR)
-        if func(candidate_with_level) != QuestionEnum.ASK_LANGUAGE:
-            points -= 1
-
-        candidate_with_level_and_lang = Candidate(level=LevelEnum.JUNIOR,
-                                                  lang=LanguageEnum.PYTHON)
-        if func(candidate_with_level_and_lang) != QuestionEnum.ASK_DEGREE:
-            points -= 1
-    except Exception as e:
-        success = False
-        points = 1
-        error = str(e)
-    if points == 5:
-        message = "Твой код отлично сработал, держи баллллы"
-    elif success is False:
-        message = f"Ууупс, твой код упал с ошибкой: {error}, но пару баллов мы тебе начислим за первое задание.."
-    elif points < 5:
-        message = f"Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
-
-    RESULTS["task_1"].append({
-        "user_id": user_id,
-        "success": success,
-        "points": points,
-        "error": error,
-    })
-    return message
-
-
 def get_text_task_2():
     return "Необходимо реализовать функцию, которая будет вычислять энтропию Шеннона"
 
@@ -126,99 +76,45 @@ def get_photo_file_task_2() -> str:
     return f"{INPUT_STORAGE}/task_2.png"
 
 
-def get_template_file_task_2() -> str:
-    return f"{TEMPLATE_FILES_DIR}/task_2.py"
-
-
-def test_task_2(user_id: int):
-    success = True
-    error = None
-
-    def valid_entropy(class_probabilities: List[float]) -> float:
-        return sum(-p * math.log(p, 2) for p in class_probabilities if p > 0)
-
-    random_class_probabilities = [random.randint(0, 10) / 10 for i in range(10)]
-    try:
-        user_file = os.path.join(OUT_STORAGE,
-                                 f"task_2_{user_id}.py")
-        module = load_module(user_file)
-        func = module.entropy
-
-        if valid_entropy(random_class_probabilities) == func(
-                random_class_probabilities):
-            message = "Твой код отлично сработал, держи баллллы"
-            points = 5
-        else:
-            points = 1
-            message = "Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
-    except Exception as e:
-        message = f"Ууупс, твой код упал с ошибкой: {e}"
-        success = False
-        error = str(e)
-        points = 0
-    RESULTS["task_2"].append({
-        "user_id": user_id,
-        "success": success,
-        "points": points,
-        "error": error,
-    })
-    return message
-
-
-def get_text_task_3():
-    return "Необходимо реализовать функцию, которая будет вычислять вероятности класса для энтропии Шеннона"
-
-
-def get_template_file_task_3():
-    return f"{TEMPLATE_FILES_DIR}/task_3.py"
-
-
-def test_task_3(user_id: int):
-    success = True
-    error = None
-
-    def valid_class_probabilities(labels: List[Any]) -> List[float]:
-        total_count = len(labels)
-        res = []
-        for count in Counter(labels).values():
-            res.append(count / total_count)
-        return res
-
-    def valid_entropy(class_probabilities: List[float]) -> float:
-        return sum(-p * math.log(p, 2) for p in class_probabilities if p > 0)
-
-    def valid_data_entropy(labels: List[Any]) -> float:
-        return valid_entropy(valid_class_probabilities(labels))
-
-    random_class_probabilities = [random.randint(0, 10) for i in range(10)]
-    try:
-        user_file = os.path.join(OUT_STORAGE,
-                                 f"task_3_{user_id}.py")
-        module = load_module(user_file)
-        func = module.data_entropy
-        if valid_data_entropy(random_class_probabilities) == func(
-                random_class_probabilities):
-            message = "Твой код отлично сработал, держи баллллы"
-            points = 5
-        else:
-            message = "Ты почти справился, не максимум баллов, конечно, но тоже хорошо справился!"
-            points = 1
-    except Exception as e:
-        message = f"Ууупс, твой код упал с ошибкой: {e}"
-        success = False
-        error = str(e)
-        points = 0
-
-    RESULTS["task_3"].append({
-        "user_id": user_id,
-        "success": success,
-        "points": points,
-        "error": error,
-    })
-
-    return message
-
-
 def save_results():
     with open("grade.json", "w") as f:
         json.dump(RESULTS, f)
+
+
+def test_task():
+    grade = 5
+
+    def valid_entropy(class_probabilities: List[float]) -> float:
+        return sum(-p * math.log(p, 2) for p in class_probabilities if p > 0)
+
+    try:
+        user_file = os.path.join(OUT_STORAGE, "task_out.py")
+        module = load_module(user_file)
+        func_select = module.select
+        candidate_no_attributes = Candidate()
+
+        if func_select(candidate_no_attributes) != QuestionEnum.ASK_LEVEL:
+            grade -= 1
+
+        candidate_with_level = Candidate(level=LevelEnum.JUNIOR)
+        if func_select(candidate_with_level) != QuestionEnum.ASK_LANGUAGE:
+            grade -= 1
+
+        candidate_with_level_and_lang = Candidate(level=LevelEnum.JUNIOR,
+                                                  lang=LanguageEnum.PYTHON)
+        if func_select(
+                candidate_with_level_and_lang) != QuestionEnum.ASK_DEGREE:
+            grade -= 1
+
+        random_class_probabilities = [random.randint(0, 10) / 10 for i in
+                                      range(10)]
+        func_entropy = module.entropy
+
+        if valid_entropy(random_class_probabilities) != func_entropy(
+                random_class_probabilities):
+            grade -= 2
+
+    except Exception as e:
+        grade = str(e)
+
+    RESULTS["grade"] = grade

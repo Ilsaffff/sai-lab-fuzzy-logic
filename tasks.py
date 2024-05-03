@@ -10,7 +10,7 @@ from utils import load_module
 TEMPLATE_FILE_PATH = 'task_template.py'
 RESULTS = {"grade": None}
 
-OUT_STORAGE = "out_storage"
+OUTPUT_TASK_FILE = "task.py"
 INPUT_STORAGE = "in_storage"
 
 
@@ -88,7 +88,7 @@ def test_task():
         return sum(-p * math.log(p, 2) for p in class_probabilities if p > 0)
 
     try:
-        user_file = os.path.join(OUT_STORAGE, "task_out.py")
+        user_file = os.path.join(OUTPUT_TASK_FILE)
         module = load_module(user_file)
         func_select = module.select
         candidate_no_attributes = Candidate()
